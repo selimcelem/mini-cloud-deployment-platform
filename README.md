@@ -32,6 +32,7 @@ High level flow:
 
 # Project Structure
 
+```
 mini-cloud-deployment-platform
 │
 ├── app
@@ -49,8 +50,7 @@ mini-cloud-deployment-platform
 │
 ├── README.md
 └── LICENSE
-
----
+```
 
 # Technology Stack
 
