@@ -144,6 +144,8 @@ docker run --rm -p 8000:8000 mini-cloud-deployment-platform:local
 
 Environment variable test:
 
+This confirms the application can run as a portable container image, which will later be deployed to Amazon ECS using Fargate.
+
 ~~~powershell
 docker run --rm -p 8000:8000 -e APP_VERSION=local-docker -e ENVIRONMENT=docker mini-cloud-deployment-platform:local
 ~~~
@@ -162,17 +164,38 @@ feat: containerize FastAPI demo application
 
 ---
 
-# Current Status
+# Step 6 - Terraform Structure for Reproducibility
 
-Completed so far:
+## What I created
 
-- repository initialized
-- README created
-- FastAPI demo service implemented
-- local Python environment tested
-- Docker installed and verified
-- application containerized and tested locally
+I split the Terraform code into two directories:
 
+- `terraform/bootstrap`
+- `terraform/platform`
+
+Commands used:
+
+~~~powershell
+mkdir .\terraform\bootstrap
+mkdir .\terraform\platform
+~~~
+
+## Why this is needed
+
+Terraform cannot use an S3 backend until the S3 bucket already exists.
+
+To keep the project reproducible from a fresh machine, the infrastructure is separated into:
+
+- a bootstrap layer for creating Terraform remote state resources
+- a platform layer for the actual deployment platform infrastructure
+
+This mirrors real-world Terraform structure and makes the project easier to understand on GitHub.
+
+Commit:
+
+~~~text
+chore: create terraform folder structure
+~~~
 ---
 
 # Next Steps
