@@ -1,8 +1,11 @@
+# Python
+.venv/
+
 # Terraform
-.terraform/
+**/.terraform/*
 *.tfstate
-*.tfstate.backup
+*.tfstate.*
 *.tfvars
 
-# Terraform lock file
-!terraform.lock.hcl
+# Terraform lock files
+!**/.terraform.lock.hcl
