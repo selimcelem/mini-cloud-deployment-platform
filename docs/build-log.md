@@ -281,10 +281,63 @@ aws dynamodb list-tables
 
 ---
 
+# Step 8 - Configure Platform Terraform Remote Backend
+
+## What was created
+
+Terraform backend and provider configuration for the platform layer.
+
+Location:
+
+~~~text
+terraform/platform
+~~~
+
+Files created:
+
+~~~text
+backend.tf
+providers.tf
+.terraform.lock.hcl
+~~~
+
+## Why this is needed
+
+The platform layer must use remote Terraform state instead of local state.
+
+This allows:
+
+- centralized state storage in S3
+- state locking with DynamoDB
+- reproducible infrastructure changes from any machine
+- safe future CI/CD execution
+
+## Commands used
+
+~~~powershell
+notepad .\terraform\platform\backend.tf
+notepad .\terraform\platform\providers.tf
+
+cd .\terraform\platform
+terraform init
+terraform init -reconfigure
+terraform init -upgrade
+terraform providers
+~~~
+
+## Result
+
+The platform Terraform layer is now configured to use:
+
+- S3 remote state
+- DynamoDB state locking
+- pinned AWS provider version via `.terraform.lock.hcl`
+
+---
+
 # Next Steps
 
-1. Configure Terraform remote backend (platform layer)
-2. Create Amazon ECR repository
-3. Deploy ECS Fargate service
-4. Configure Application Load Balancer
-5. Implement CI/CD pipeline (GitHub Actions)
+1. Create Amazon ECR repository (container registry)
+2. Deploy ECS Fargate service
+3. Configure Application Load Balancer
+4. Implement CI/CD pipeline (GitHub Actions)
