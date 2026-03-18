@@ -335,9 +335,91 @@ The platform Terraform layer is now configured to use:
 
 ---
 
+# Step 9 - Amazon ECR and CI/CD Pipeline Setup
+
+## What was created
+
+Platform infrastructure and CI/CD components for container image delivery.
+
+Location:
+
+~~~text
+terraform/platform
+.github/workflows
+docs
+~~~
+
+Files created or updated:
+
+~~~text
+terraform/platform/ecr.tf
+.github/workflows/deploy.yml
+docs/project-brief.md
+~~~
+
+AWS resources created:
+
+- Amazon ECR repository: `mini-cloud-deployment-platform`
+- IAM user: `github-actions-mini-cloud-platform`
+  - used for GitHub Actions authentication
+  - attached policies:
+    - AmazonEC2ContainerRegistryFullAccess
+    - AmazonECSFullAccess
+
+CI/CD workflow created:
+
+- GitHub Actions workflow to:
+  - build Docker image
+  - authenticate to AWS using repository secrets
+  - push image to Amazon ECR on every push to `main`
+
+## Why this is needed
+
+The application must be packaged as a container image before it can be deployed to ECS.
+
+Amazon ECR provides a private container registry for storing application images.
+
+GitHub Actions automates the build and push process so deployments are repeatable and no manual Docker push is required.
+
+A dedicated IAM user was created for CI/CD to allow GitHub Actions to securely interact with AWS services.
+
+This follows the principle of least privilege by restricting access to only the required services (ECR and ECS).
+
+## Commands used
+
+~~~powershell
+cd .\terraform\platform
+terraform plan
+terraform apply
+
+git add .
+git commit -m "feat: add ECR repository and CI/CD pipeline for Docker image deployment"
+git push
+
+aws ecr describe-repositories --repository-names mini-cloud-deployment-platform --region eu-central-1
+aws ecr list-images --repository-name mini-cloud-deployment-platform --region eu-central-1
+~~~
+
+## Result
+
+Successfully created the Amazon ECR repository and verified it in AWS.
+
+Successfully ran the GitHub Actions workflow to:
+
+- build the Docker image
+- authenticate to AWS
+- push the image to ECR
+
+Verified that the repository now contains the `latest` image tag.
+
+This confirms a complete CI/CD loop from code commit to container registry delivery.
+
+---
+
 # Next Steps
 
-1. Create Amazon ECR repository (container registry)
-2. Deploy ECS Fargate service
-3. Configure Application Load Balancer
-4. Implement CI/CD pipeline (GitHub Actions)
+1. Deploy the container on ECS Fargate
+2. Configure Application Load Balancer (ALB)
+3. Connect ECS service to ALB target group
+4. Extend CI/CD to update ECS on new image push
+5. Add CloudWatch logging and runtime observability
