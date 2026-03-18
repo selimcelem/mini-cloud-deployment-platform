@@ -392,11 +392,12 @@ cd .\terraform\platform
 terraform plan
 terraform apply
 
+aws ecr describe-repositories --repository-names mini-cloud-deployment-platform --region eu-central-1
+
 git add .
 git commit -m "feat: add ECR repository and CI/CD pipeline for Docker image deployment"
 git push
 
-aws ecr describe-repositories --repository-names mini-cloud-deployment-platform --region eu-central-1
 aws ecr list-images --repository-name mini-cloud-deployment-platform --region eu-central-1
 ~~~
 
