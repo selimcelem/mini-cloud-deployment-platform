@@ -201,7 +201,7 @@ To ensure full reproducibility from scratch, infrastructure is split into:
 - bootstrap layer → creates backend resources (S3 + DynamoDB)
 - platform layer → defines actual infrastructure (ECS, ALB, etc.)
 
-## Key design decision
+## Design considerations
 
 Separate Terraform into two stages:
 
