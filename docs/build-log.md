@@ -541,10 +541,51 @@ The Terraform configuration now supports cleaner rebuild and destroy cycles for 
 
 ---
 
+# Step 12 - Add Terraform Outputs for Key Platform Resources
+
+## What was created
+
+Terraform outputs for the most important platform values.
+
+File created:
+
+~~~text
+terraform/platform/outputs.tf
+~~~
+
+Outputs added:
+
+- `alb_dns_name`
+- `ecr_repository_url`
+- `ecs_cluster_name`
+- `ecs_service_name`
+
+## Why this is needed
+
+Terraform outputs make the deployed environment easier to use and verify.
+
+Instead of manually querying AWS, the most important values can now be retrieved directly from Terraform after deployment.
+
+This improves reproducibility and makes the project easier to understand from a fresh machine.
+
+## Commands used
+
+~~~powershell
+notepad .\terraform\platform\outputs.tf
+cd .\terraform\platform
+terraform apply
+terraform output
+~~~
+
+## Result
+
+The platform now exposes key deployment values directly through Terraform outputs, including the public ALB DNS name and core ECS/ECR resource identifiers.
+
+---
+
 # Next Steps
 
-1. Add Terraform outputs for the ALB DNS name
-2. Extend GitHub Actions to update ECS on new image push
-3. Add CloudWatch log verification and operational checks
-4. Improve security by reducing CI/CD IAM permissions where possible
-5. Add cleanup and destroy instructions to the README
+1. Extend GitHub Actions to update ECS on new image push
+2. Add CloudWatch log verification and operational checks
+3. Improve security by reducing CI/CD IAM permissions where possible
+4. Add cleanup and destroy instructions to the README
