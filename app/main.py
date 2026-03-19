@@ -4,7 +4,7 @@ import os
 
 app = FastAPI(title="Mini Cloud Deployment Platform")
 
-APP_VERSION = os.getenv("APP_VERSION", "dev")
+APP_VERSION = os.getenv("APP_VERSION", "step13-test")
 ENVIRONMENT = os.getenv("ENVIRONMENT", "local")
 
 

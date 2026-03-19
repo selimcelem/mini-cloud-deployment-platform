@@ -1,4 +1,4 @@
-name: Deploy to AWS ECR
+name: Deploy to AWS ECR and ECS
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    name: Build and Push Docker Image
+    name: Build, Push, and Deploy
     runs-on: ubuntu-latest
 
     steps:
@@ -36,3 +36,10 @@ jobs:
       - name: Push Docker image to ECR
         run: |
           docker push 837649971999.dkr.ecr.eu-central-1.amazonaws.com/mini-cloud-deployment-platform:latest
+
+      - name: Force new ECS deployment
+        run: |
+          aws ecs update-service \
+            --cluster mini-cloud-deployment-platform-cluster \
+            --service mini-cloud-platform-service \
+            --force-new-deployment
