@@ -11,7 +11,7 @@ ENVIRONMENT = os.getenv("ENVIRONMENT", "local")
 @app.get("/")
 def read_root():
     return {
-        "message": "Hello from the Mini Cloud Deployment Platform - Step 13 test",
+        "message": "Hello from the Mini Cloud Deployment Platform",
         "service": "mini-cloud-deployment-platform",
         "environment": ENVIRONMENT,
         "version": APP_VERSION

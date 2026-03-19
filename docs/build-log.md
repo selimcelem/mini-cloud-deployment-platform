@@ -583,9 +583,33 @@ The platform now exposes key deployment values directly through Terraform output
 
 ---
 
+## Step 13: GitHub Actions ECS deployment trigger
+
+### What was created
+The GitHub Actions workflow in `.github/workflows/deploy.yml` was extended to trigger an ECS service redeployment after pushing the Docker image to Amazon ECR.
+
+### Why this is needed
+The previous workflow stopped after pushing the image to ECR. That meant the new image existed in the registry, but ECS would keep running the old task until a manual redeploy was triggered. Adding `aws ecs update-service --force-new-deployment` closes that gap and enables true push-to-deploy behavior.
+
+### Commands used
+The workflow now runs this ECS deployment command after the image push:
+
+    aws ecs update-service \
+      --cluster mini-cloud-deployment-platform-cluster \
+      --service mini-cloud-platform-service \
+      --force-new-deployment
+
+### Result
+A push to `main` now:
+1. builds the Docker image
+2. pushes the image to Amazon ECR
+3. forces ECS to deploy the new image automatically
+
+---
+
 # Next Steps
 
-1. Extend GitHub Actions to update ECS on new image push
-2. Add CloudWatch log verification and operational checks
-3. Improve security by reducing CI/CD IAM permissions where possible
-4. Add cleanup and destroy instructions to the README
+1. Add CloudWatch log verification and operational checks
+2. Improve security by reducing CI/CD IAM permissions where possible
+3. Add cleanup and destroy instructions to the README
+4. Reassess README accuracy now that ECS CI/CD is fully working
