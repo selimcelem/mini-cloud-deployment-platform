@@ -607,9 +607,47 @@ A push to `main` now:
 
 ---
 
+## Step 14: Verify CloudWatch logging and operational visibility
+
+### What was verified
+The ECS service log group in CloudWatch was opened and the application log streams were inspected.
+
+Log group used:
+
+    /ecs/mini-cloud-deployment-platform
+
+Recent log streams were present and contained live request logs from the running ECS tasks, including health check traffic and real application requests such as `GET / HTTP/1.1`.
+
+### Why this is needed
+Deployment success alone is not enough for a production-style platform. Basic observability is also required.
+
+Verifying CloudWatch logs confirms that:
+- ECS tasks can write application logs
+- the logging configuration is working
+- operational troubleshooting is possible after deployment
+
+### Commands used
+No local CLI commands were required for this verification step.
+
+AWS Console path used:
+- CloudWatch
+- Logs
+- Log groups
+- `/ecs/mini-cloud-deployment-platform`
+
+### Result
+CloudWatch logging is working for the ECS service.
+
+Recent log streams showed both ALB health check requests and real application requests, confirming that:
+1. the application is running
+2. the ALB is reaching the container
+3. live requests are reaching the app
+4. logs are being shipped successfully to CloudWatch
+
+---
+
 # Next Steps
 
-1. Add CloudWatch log verification and operational checks
-2. Improve security by reducing CI/CD IAM permissions where possible
-3. Add cleanup and destroy instructions to the README
-4. Reassess README accuracy now that ECS CI/CD is fully working
+1. Improve security by reducing CI/CD IAM permissions where possible
+2. Add cleanup and destroy instructions to the README
+3. Reassess README accuracy now that ECS CI/CD is fully working
