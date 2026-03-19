@@ -417,10 +417,96 @@ This confirms a complete CI/CD loop from code commit to container registry deliv
 
 ---
 
+# Step 10 - ECS Fargate Deployment with Application Load Balancer
+
+## What was created
+
+Runtime infrastructure to deploy and expose the application publicly on AWS.
+
+Location:
+
+~~~text
+terraform/platform
+~~~
+
+Files created or updated:
+
+~~~text
+terraform/platform/networking.tf
+terraform/platform/ecs.tf
+terraform/platform/service.tf
+~~~
+
+AWS resources created:
+
+- VPC
+- 2 public subnets
+- Internet Gateway
+- public route table and associations
+- security group for ALB
+- security group for ECS tasks
+- ECS cluster
+- ECS task execution IAM role
+- ECS task definition
+- CloudWatch log group
+- Application Load Balancer
+- ALB target group
+- ALB listener
+- ECS service running on Fargate
+
+## Why this is needed
+
+The ECR image must be run as a managed container service in AWS.
+
+ECS Fargate provides serverless container runtime without managing EC2 instances.
+
+The Application Load Balancer provides a public entry point and routes traffic to healthy ECS tasks.
+
+The networking layer allows the service to run in a dedicated VPC and receive internet traffic in a controlled way.
+
+The ALB and ECS task security groups were separated so that:
+
+- the ALB accepts public HTTP traffic on port 80
+- ECS tasks accept application traffic on port 8000 only from the ALB
+
+This follows a more realistic production-style network design.
+
+## Commands used
+
+~~~powershell
+notepad .\terraform\platform\networking.tf
+notepad .\terraform\platform\ecs.tf
+notepad .\terraform\platform\service.tf
+
+cd .\terraform\platform
+terraform plan
+terraform apply
+
+aws elbv2 describe-load-balancers --names mini-cloud-platform-alb --region eu-central-1
+aws elbv2 describe-target-health --target-group-arn arn:aws:elasticloadbalancing:eu-central-1:837649971999:targetgroup/mini-cloud-platform-tg/47e734ac7156e176 --region eu-central-1
+~~~
+
+## Result
+
+Successfully deployed the FastAPI container to ECS Fargate.
+
+Successfully exposed the application through an internet-facing Application Load Balancer.
+
+Verified that:
+
+- the ALB is active
+- the ECS target became healthy after correcting the ALB security group
+- the `/` endpoint works
+- the `/health` endpoint works
+
+This confirms a complete deployment path from container image in ECR to a publicly reachable service in AWS.
+
+---
+
 # Next Steps
 
-1. Deploy the container on ECS Fargate
-2. Configure Application Load Balancer (ALB)
-3. Connect ECS service to ALB target group
-4. Extend CI/CD to update ECS on new image push
-5. Add CloudWatch logging and runtime observability
+1. Add Terraform outputs for the ALB DNS name
+2. Extend GitHub Actions to update ECS on new image push
+3. Add CloudWatch log verification and operational checks
+4. Improve security by reducing CI/CD IAM permissions where possible
+5. Add cleanup and destroy instructions to the README
