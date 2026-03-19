@@ -4,14 +4,14 @@ import os
 
 app = FastAPI(title="Mini Cloud Deployment Platform")
 
-APP_VERSION = os.getenv("APP_VERSION", "step13-test")
+APP_VERSION = os.getenv("APP_VERSION", "dev")
 ENVIRONMENT = os.getenv("ENVIRONMENT", "local")
 
 
 @app.get("/")
 def read_root():
     return {
-        "message": "Hello from the Mini Cloud Deployment Platform",
+        "message": "Hello from the Mini Cloud Deployment Platform - Step 13 test",
         "service": "mini-cloud-deployment-platform",
         "environment": ENVIRONMENT,
         "version": APP_VERSION
