@@ -503,6 +503,44 @@ This confirms a complete deployment path from container image in ECR to a public
 
 ---
 
+# Step 11 - Improve ECR Destroy Behavior
+
+## What was changed
+
+Updated the ECR repository configuration to support clean teardown.
+
+File updated:
+
+~~~text
+terraform/platform/ecr.tf
+~~~
+
+Change made:
+
+- added `force_delete = true` to the ECR repository resource
+
+## Why this is needed
+
+Terraform destroy initially failed because the ECR repository still contained images.
+
+By default, AWS does not allow deletion of a non-empty ECR repository.
+
+Setting `force_delete = true` ensures future destroy operations can remove the repository even when images are still present.
+
+## Commands used
+
+~~~powershell
+notepad .\terraform\platform\ecr.tf
+cd .\terraform\platform
+terraform plan
+~~~
+
+## Result
+
+The Terraform configuration now supports cleaner rebuild and destroy cycles for the platform infrastructure.
+
+---
+
 # Next Steps
 
 1. Add Terraform outputs for the ALB DNS name
