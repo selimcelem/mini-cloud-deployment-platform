@@ -646,8 +646,66 @@ Recent log streams showed both ALB health check requests and real application re
 
 ---
 
+## Step 15: Reduce CI/CD IAM permissions and add ECR lifecycle policy
+
+### What was changed
+The GitHub Actions IAM user was moved away from broad AWS-managed permissions to a custom least-privilege policy.
+
+Old policies removed:
+- `AmazonEC2ContainerRegistryFullAccess`
+- `AmazonECS_FullAccess`
+
+New custom policy added:
+- [`GitHubActionsMiniCloudDeployPolicy`](iam/github-actions-mini-cloud-deploy-policy.json)
+
+This custom policy allows only the actions required for this project’s CI/CD workflow:
+- authenticate to Amazon ECR
+- push images to the `mini-cloud-deployment-platform` repository
+- trigger redeployment of the `mini-cloud-platform-service` ECS service
+- describe the ECS service during deployment operations
+
+In addition, an Amazon ECR lifecycle policy was added to clean up old untagged images automatically.
+
+Lifecycle rule added:
+- keep only the 5 most recent untagged images
+- expire older untagged images asynchronously
+
+### Why this is needed
+The original GitHub Actions IAM user permissions were broader than necessary for this project.
+
+Reducing CI/CD IAM permissions to a custom least-privilege policy improves security and demonstrates better production-style IAM practice. It limits the CI user to only the AWS actions actually required for container delivery and ECS redeployment.
+
+The ECR lifecycle policy is needed to prevent old untagged images from accumulating over time, which keeps the repository cleaner and supports better cost and hygiene control.
+
+### Commands used
+Local validation and AWS CLI commands used:
+
+    Get-Content .\docs\iam\github-actions-mini-cloud-deploy-policy.json | ConvertFrom-Json
+
+    aws iam create-policy `
+      --policy-name GitHubActionsMiniCloudDeployPolicy `
+      --policy-document file://docs/iam/github-actions-mini-cloud-deploy-policy.json
+
+    aws iam attach-user-policy `
+      --user-name github-actions-mini-cloud-platform `
+      --policy-arn arn:aws:iam::837649971999:policy/GitHubActionsMiniCloudDeployPolicy
+
+    aws iam list-attached-user-policies `
+      --user-name github-actions-mini-cloud-platform
+
+    aws ecr get-lifecycle-policy `
+      --repository-name mini-cloud-deployment-platform `
+      --region eu-central-1
+
+### Result
+The GitHub Actions deployment pipeline was successfully re-tested after removing the broad ECR and ECS managed policies, confirming that the custom least-privilege policy is sufficient for the workflow.
+
+The ECR lifecycle policy is attached successfully. Cleanup of old untagged images will occur asynchronously after ECR evaluates the repository against the rule.
+
+---
+
 # Next Steps
 
-1. Improve security by reducing CI/CD IAM permissions where possible
-2. Add cleanup and destroy instructions to the README
-3. Reassess README accuracy now that ECS CI/CD is fully working
+1. Add cleanup and destroy instructions to the README
+2. Reassess README accuracy now that ECS CI/CD is fully working
+3. Add selected screenshots to `docs/screenshots/` for recruiter-facing proof
