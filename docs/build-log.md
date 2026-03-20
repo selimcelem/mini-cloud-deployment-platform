@@ -704,8 +704,44 @@ The ECR lifecycle policy is attached successfully. Cleanup of old untagged image
 
 ---
 
+## Step 16: Improve README for reproducible setup and destroy workflow
+
+### What was changed
+The README was expanded and cleaned up to better reflect the current state of the project.
+
+The updated README now includes:
+- a clearer project overview
+- the Terraform `bootstrap` and `platform` layout
+- prerequisites for a fresh machine
+- local AWS setup verification
+- rebuild order
+- clean destroy order
+- CI/CD deployment flow
+- observability notes
+- links to supporting documentation
+
+### Why this is needed
+The earlier README explained the project at a high level, but it did not yet give a clear operator-friendly workflow for rebuilding and destroying the platform from a fresh machine.
+
+Updating the README improves reproducibility, cost-aware usage, and recruiter clarity. It also makes the repo easier to understand without reading the full build log first.
+
+### Commands used
+No infrastructure changes were made for this step.
+
+The README was updated directly in:
+
+    README.md
+
+### Result
+The repository now has a more complete and accurate README that explains:
+1. what the project does
+2. how the Terraform layers work
+3. how to rebuild the platform
+4. how to destroy it cleanly
+5. how the CI/CD deployment flow works
+
+--
+
 # Next Steps
 
-1. Add cleanup and destroy instructions to the README
-2. Reassess README accuracy now that ECS CI/CD is fully working
-3. Add selected screenshots to `docs/screenshots/` for recruiter-facing proof
+1. Add selected screenshots to `docs/screenshots/` for recruiter-facing proof
