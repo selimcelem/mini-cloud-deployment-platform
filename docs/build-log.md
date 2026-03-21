@@ -740,8 +740,4 @@ The repository now has a more complete and accurate README that explains:
 4. how to destroy it cleanly
 5. how the CI/CD deployment flow works
 
---
-
-# Next Steps
-
-1. Add selected screenshots to `docs/screenshots/` for recruiter-facing proof
+---
